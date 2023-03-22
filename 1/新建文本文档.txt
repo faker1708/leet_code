@@ -1,0 +1,176 @@
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+
+struct node{
+    int index;      // 不存储值 ，而是存储下标
+    struct node* next;
+};
+
+int* twoSum(int* nums, int numsSize, int target, int* returnSize){
+    returnSize[0]=2;
+    int* out = (int*)malloc(sizeof(int)*2);
+    out[0]=-1;
+    out[1]=-1;
+    
+    // 输入的数组长度就是我们哈希表的模
+    // 节点指针排列成的数组
+    struct node** hash_array = (struct node**)malloc(sizeof(struct node*)*numsSize);
+
+    for(int i = 0;i<=numsSize-1;i++){
+        hash_array[i] = 0;
+    }
+    int a = 0;
+    int a_mod =0;
+
+    int b = 0;
+    int diff = 0;// 本数与目标的差，也就是反推期望查询的数
+    int diff_b = 0;
+    struct node* dl = 0; // 记录
+    struct node* now = 0;
+
+    int diff_mod = 0;//目标取模     // 不要用无符号整型。。。
+
+    // 哈希表中记录不是值 ，而是下标
+    int index = 0;
+    int now_value = 0; 
+    
+    struct node* new_node = 0;
+
+    int find_it = 0;        // 布尔型，记录是否查到目标
+    int j = 0;  // 目标diff 的下标
+
+
+
+
+    
+    printf("target %d\n",target);
+    printf("hash_mod %d\n",numsSize);
+    printf("\n\n");
+
+    for(int i = 0;i<=numsSize-1;i++){
+        a = nums[i];//读入一个数
+        //b = hash_array[a];  //取出此模的链表的（头节点的）地址
+        diff = target - a;      // 这就是我们要在哈希表中查询的目标
+        if(diff<0){diff_b= diff+numsSize;}
+        else{
+            diff_b = diff;
+        }
+
+        diff_mod = diff_b % numsSize; // 目标取模再查表
+        if(diff_mod<0){diff_mod= diff_mod+numsSize;}
+
+        
+        if(diff_mod<0){
+            printf("diff_mod<0 error\n");
+            exit(-1);
+        }
+
+        dl = hash_array[diff_mod];
+
+        // printf("diff %d\n",diff);
+        // printf("numsSize %d\n",numsSize);
+        // printf("diff_mod %d\n",diff_mod);
+        // if(diff_mod <0){
+        //     printf("坏了\n");
+        // }else{
+        //     printf("好的\n");
+
+        // }
+
+        // exit(-1);
+
+
+        printf("a = %d\n",a);
+        printf("diff %d\n",diff);
+        printf("diff_mod %d\n",diff_mod);
+
+
+
+        if(dl==0){
+            // 查不到
+            // 查不到对象，就把自己存入hash表。
+            find_it = 0;
+
+
+        }else{
+            // 已经有人来过了。
+            // 有值，也不一定能查到，还要看是否有hash冲突
+
+            now = dl;
+            printf("dl %p\n",dl);
+            while(1){
+                // 开启一个on时度的查链表
+                if(now==0){
+                    find_it = 0;//妹查到，链表已经完了，根本没有
+                    break;
+                }else{
+                    // now不空
+                    index = now->index;
+                    now_value = nums[index];
+
+
+                    printf("index %d\n",index);
+                    printf("now_value %d\n",now_value);
+
+                    if(now_value == diff){  // 这里不能用 diff_mod了，因为要匹配真实的值 ，不能再用代表了
+                        if(index ==i){
+                            // printf("")
+                        }
+                        
+                        j = index;
+                        find_it = 1;//查到对象了
+                        printf("查到对象了\n");
+                        break;
+                    }else{
+                        // 不是想要 的值
+                        now=now->next;
+                        find_it = 0;
+                    }
+                }
+                
+            }
+
+        }
+
+        printf("find_it %d\n",find_it);
+
+        // 查询结束
+        if(find_it==1){
+            out[0]=j;
+            out[1]=i;
+            printf("______\n\n");
+
+            break;
+
+        }else if(find_it==0){
+            // 没找到就添加
+            a_mod = a % numsSize;        
+            
+            if(a_mod<0){a_mod= a_mod+numsSize;}
+            printf("a_mod %d\n",a_mod);
+
+            dl = hash_array[a_mod];
+            // 新建一个节点
+            new_node = (struct node*)malloc(sizeof(struct node)*1);
+            new_node->index = i;
+
+            // 压栈式存入链表的开头
+            new_node->next = dl;
+            hash_array[a_mod]=new_node;
+            
+
+        }else{
+            printf("error find_it=%d\n",find_it);
+            exit(-1);
+        }
+
+        printf("______\n\n");
+
+    }
+    printf("for end\n");
+
+
+//  限定了一定有答案，所以不必讨论异常
+    return out;
+}

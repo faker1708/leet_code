@@ -1,0 +1,44 @@
+class Solution:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        # dp? 那个三数之和是否与这题相似？？？
+
+        # 三个数相加，与目标相差最小。我想用神经网络了。。。
+
+        # 放弃不会
+
+        # 三循环是可以，确实，考试时不会就三循环吧。但现在没必要写，要学更好的算法。
+        # 我还是来写下吧。确保自己逻辑能力在线。
+
+        n= len(nums)
+        init = 0
+        old_diff =0
+        out = 0
+        for i in range(0,n):
+            for j in range(i+1,n):
+                for k in range(j+1,n):
+                    sum = nums[i]+nums[j]+nums[k]
+                    diff = abs(target-sum)
+                    # print(diff,i,j,k)
+
+                    if(init == 1):
+                        if(diff<old_diff):
+                            old_diff = diff
+                            out = sum
+                        else:
+                            pass
+                    else:
+                        old_diff = diff
+                        out = sum
+                    init = 1
+        
+        return out
+
+
+
+        # 反思 ：忘了取abs了。。。
+        # 这是调试出来的，看来我们调试能力还不错。
+
+        # Time Limit Exceeded
+        # 超时了，至少目前来说逻辑还不错。
+
+        
